@@ -1,8 +1,10 @@
+import Router from './AppRouter';
+
 const App = () => {
   return (
-    <div className="App">
-      <h1>Countries App</h1>
-    </div>
+    <>
+      <Router />
+    </>
   );
 };
 
