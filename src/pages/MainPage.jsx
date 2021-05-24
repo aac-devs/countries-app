@@ -7,6 +7,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
@@ -17,9 +25,23 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '320px',
     backgroundColor: theme.palette.background.paper,
   },
+  tableRoot: {
+    // margin: '0 auto',
+    width: '100%',
+    maxWidth: '1300px',
+    minWidth: '712px',
+    backgroundColor: theme.palette.background.paper,
+  },
   listItem: {
     borderBottom: '1px solid #eee',
     shadow: theme.shadows[15],
+    cursor: 'pointer',
+    transition: 'all 0.5s',
+    '&:hover': {
+      backgroundColor: '#eee',
+    },
+  },
+  tableRow: {
     cursor: 'pointer',
     transition: 'all 0.5s',
     '&:hover': {
@@ -50,9 +72,27 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionDesktop: {
     display: 'flex',
+    padding: '16px',
+    height: 'calc(100vh - 96px)',
+    maxWidth: '1400px',
+    backgroundColor: '#80cbc4',
+    margin: '0 auto',
+    // position: 'fixed',
+    // top: '80px',
+    // left: 0,
+    overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       display: 'none',
     },
+  },
+  table: {
+    minWidth: '758px',
+  },
+  paper: {
+    marginRight: '16px',
+    width: '200px',
+    minWidth: '200px',
+    padding: '8px',
   },
 }));
 
@@ -60,24 +100,243 @@ const MainPage = ({ history }) => {
   const [countriesList, setCountriesList] = useState([]);
   const classes = useStyles();
 
+  const fetchCountries = async () => {
+    const resp = await fetch('https://restcountries.eu/rest/v2/all');
+    const countries = await resp.json();
+    setCountriesList(countries);
+  };
+
   useEffect(() => {
-    const fetchCountries = async () => {
-      const resp = await fetch('https://restcountries.eu/rest/v2/all');
-      const countries = await resp.json();
-      setCountriesList(countries);
-    };
     fetchCountries();
   }, []);
 
   const handleSelectCountry = (option) => {
-    console.log('handleSelectCountry', option);
-    console.log(history);
     history.push(`/countries/details/:${option}`);
+  };
+
+  const fetchByRegion = async (region) => {
+    const resp = await fetch(
+      `https://restcountries.eu/rest/v2/region/${region}`,
+    );
+    const countries = await resp.json();
+    setCountriesList(countries);
+  };
+
+  const fetchByLanguage = async (region) => {
+    const resp = await fetch(`https://restcountries.eu/rest/v2/lang/${region}`);
+    const countries = await resp.json();
+    setCountriesList(countries);
+  };
+
+  const handleFilterByRegion = (option) => {
+    if (option === 'all') {
+      fetchCountries();
+    } else {
+      fetchByRegion(option);
+    }
+  };
+
+  const handleFilterByLanguage = (option) => {
+    fetchByLanguage(option);
   };
 
   return (
     <>
-      <div className={classes.sectionDesktop}>Desktop</div>
+      <div className={classes.sectionDesktop}>
+        {countriesList && (
+          <>
+            <Paper className={classes.paper}>
+              <Typography variant="h6">Filter by:</Typography>
+              <hr />
+              <Typography variant="button">region</Typography>
+              <br />
+              <div style={{ paddingLeft: '20px' }}>
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('all')}
+                >
+                  All
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('africa')}
+                >
+                  Africa
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('americas')}
+                >
+                  Americas
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('asia')}
+                >
+                  Asia
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('europe')}
+                >
+                  Europe
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByRegion('oceania')}
+                >
+                  Oceania
+                </Link>
+              </div>
+              <hr />
+              <Typography variant="button">language</Typography>
+              <br />
+              <div style={{ paddingLeft: '20px' }}>
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('en')}
+                >
+                  English
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('fr')}
+                >
+                  French
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('es')}
+                >
+                  Spanish
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('de')}
+                >
+                  German
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('pt')}
+                >
+                  Portuguese
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('it')}
+                >
+                  Italian
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('ru')}
+                >
+                  Russian
+                </Link>
+                <br />
+                <Link
+                  component="button"
+                  href="/"
+                  variant="body2"
+                  onClick={() => handleFilterByLanguage('ar')}
+                >
+                  Arabic
+                </Link>
+              </div>
+            </Paper>
+            <TableContainer component={Paper} className={classes.tableRoot}>
+              <Table
+                // className={classes.table}
+                aria-label="simple table"
+                stickyHeader
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="center">Flag</TableCell>
+                    <TableCell align="left">Name</TableCell>
+                    <TableCell align="right">Capital</TableCell>
+                    <TableCell align="right">
+                      Area&nbsp;(km<sup>2</sup>)
+                    </TableCell>
+                    <TableCell align="right">Population</TableCell>
+                    <TableCell align="right">Languages</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {countriesList.map((country) => (
+                    <TableRow
+                      key={country.name}
+                      className={classes.tableRow}
+                      onClick={() => handleSelectCountry(country.name)}
+                    >
+                      <TableCell component="th" scope="row">
+                        <Avatar src={country.flag} />
+                      </TableCell>
+                      <TableCell component="th" scope="row">
+                        {country.name}
+                      </TableCell>
+                      <TableCell align="right">{country.capital}</TableCell>
+                      <TableCell align="right">
+                        {country.area?.toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        {country.population?.toLocaleString()}
+                      </TableCell>
+                      <TableCell align="right">
+                        {country.languages.map((lang, index) => {
+                          let l = lang.iso639_2.toUpperCase();
+                          if (index !== country.languages.length - 1) {
+                            l += '/ ';
+                          }
+                          return l;
+                        })}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
+        )}
+      </div>
       <div className={classes.sectionMobile}>
         <List className={classes.root}>
           {countriesList &&
@@ -117,14 +376,14 @@ const MainPage = ({ history }) => {
                           align="justify"
                           component="span"
                         >
-                          Area: {country.area} km2.
+                          Area: {country.area?.toLocaleString()} km<sup>2</sup>
                         </Typography>
                         <Typography
                           variant="caption"
                           align="right"
                           component="span"
                         >
-                          Population: {country.population} hab.
+                          Population: {country.population?.toLocaleString()}
                         </Typography>
                       </span>
                     </>

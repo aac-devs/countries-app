@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,6 +32,10 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit',
   },
 }));
 
@@ -100,40 +105,33 @@ const DetailPage = ({ history = {} }) => {
             <div className={classes.inline}>
               <Typography gutterBottom variant="body2">
                 <strong>Area: </strong>
-                {country.area} km2
+                {country.area?.toLocaleString()} km<sup>2</sup>
               </Typography>
               <Typography gutterBottom variant="body2">
                 <strong>Population: </strong>
-                {country.population} hab.
+                {country.population?.toLocaleString()}
               </Typography>
             </div>
             <hr />
             <Typography gutterBottom variant="body2">
               <strong>Currencies: </strong>
               {country.currencies &&
-                country.currencies.map((cur, index) => {
-                  // const code = cur.code;
-                  // const name = cur.name;
-                  // const symbol = cur.symbol;
-
-                  // if (index !== country.currencies.length - 1) {
-                  //   l += ' - ';
-                  // }
-                  return (
-                    <div style={{ marginLeft: '24px' }}>
-                      <strong>Code </strong>&nbsp;
-                      {cur.code}
-                      <br />
-                      <strong>Symbol </strong>&nbsp;
-                      {cur.symbol}
-                      <br />
-                      <strong>Name </strong>&nbsp;
-                      {cur.name}
-                      {/* <hr /> */}
-                      {index !== country.currencies.length - 1 && <hr />}
-                    </div>
-                  );
-                })}
+                country.currencies.map((cur, index) => (
+                  <span
+                    style={{ marginLeft: '24px', display: 'block' }}
+                    key={cur.code}
+                  >
+                    <strong>Code </strong>&nbsp;
+                    {cur.code}
+                    <br />
+                    <strong>Symbol </strong>&nbsp;
+                    {cur.symbol}
+                    <br />
+                    <strong>Name </strong>&nbsp;
+                    {cur.name}
+                    {index !== country.currencies.length - 1 && <hr />}
+                  </span>
+                ))}
             </Typography>
             <hr />
             <Typography gutterBottom variant="body2">
@@ -142,7 +140,7 @@ const DetailPage = ({ history = {} }) => {
                 country.timezones.map((time, index) => {
                   let tz = time;
                   if (index !== country.timezones.length - 1) {
-                    tz += ' - ';
+                    tz += ', ';
                   }
                   return tz;
                 })}
@@ -150,16 +148,14 @@ const DetailPage = ({ history = {} }) => {
             <hr />
           </CardContent>
           <CardActions>
-            <Button size="small" color="primary">
-              back to countries
-            </Button>
+            <Link to="/countries" className={classes.link}>
+              <Button size="small" color="primary">
+                back to countries
+              </Button>
+            </Link>
           </CardActions>
         </Card>
       )}
-      {/* <div>
-        <h1>Detail Page</h1>
-        <pre>{JSON.stringify(country)}</pre>
-      </div> */}
     </div>
   );
 };

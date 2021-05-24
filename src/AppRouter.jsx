@@ -25,13 +25,6 @@ const AppRouter = () => {
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route exact path="/countries" component={MainPage} />
-          {/* <Route
-            path="/countries"
-            component={(props) => <MainPage {...props} />}
-          /> */}
-          {/* <MainPage />
-          </Route> */}
-          {/* //  component={MainPage} /> */}
           <Route exact path="/countries/details/:name" component={DetailPage} />
           <Route exact path="/about" component={AboutPage} />
           <Redirect to="/" />
