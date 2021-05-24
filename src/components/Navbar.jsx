@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bar: {
     backgroundColor: '#004d40',
+    top: 0,
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -72,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'none',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
-      marginLeft: '24px',
     },
   },
   link: {
@@ -123,41 +123,43 @@ const Navbar = () => {
       onClose={() => handleMobileMenuClose('none')}
     >
       <MenuItem onClick={() => handleMobileMenuClose('home')}>
-        <IconButton color="inherit">
-          <HomeIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          <Link to="/" className={classes.link}>
+        <Link to="/" className={classes.link}>
+          <IconButton color="inherit">
+            <HomeIcon />
+          </IconButton>
+        </Link>
+        {/* <Typography variant="h6" className={classes.title}>
             Home
-          </Link>
-        </Typography>
+        </Typography> */}
       </MenuItem>
+
       <MenuItem onClick={() => handleMobileMenuClose('main')}>
-        <IconButton color="inherit">
-          <PublicIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          <Link to="/countries" className={classes.link}>
+        <Link to="/countries" className={classes.link}>
+          <IconButton color="inherit">
+            <PublicIcon />
+          </IconButton>
+        </Link>
+        {/* <Typography variant="h6" className={classes.title}>
             Countries
-          </Link>
-        </Typography>
+        </Typography> */}
       </MenuItem>
+
       <MenuItem onClick={() => handleMobileMenuClose('about')}>
-        <IconButton color="inherit">
-          <InfoIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          <Link to="/about" className={classes.link}>
+        <Link to="/about" className={classes.link}>
+          <IconButton color="inherit">
+            <InfoIcon />
+          </IconButton>
+        </Link>
+        {/* <Typography variant="h6" className={classes.title}>
             About
-          </Link>
-        </Typography>
+        </Typography> */}
       </MenuItem>
     </Menu>
   );
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static" className={classes.bar}>
+      <AppBar position="fixed" className={classes.bar}>
         <Toolbar>
           <Typography className={classes.title} variant="h5" noWrap>
             aac-devs
@@ -178,33 +180,25 @@ const Navbar = () => {
             />
           </div>
           <div className={classes.grow} />
-          <Typography
-            variant="h6"
-            className={classes.titleDesktop}
-            onClick={() => handleMobileMenuClose('home')}
-          >
+
+          <IconButton color="inherit" className={classes.titleDesktop}>
             <Link to="/" className={classes.link}>
-              Home
+              <HomeIcon />
             </Link>
-          </Typography>
-          <Typography
-            variant="h6"
-            className={classes.titleDesktop}
-            onClick={() => handleMobileMenuClose('main')}
-          >
+          </IconButton>
+
+          <IconButton color="inherit" className={classes.titleDesktop}>
             <Link to="/countries" className={classes.link}>
-              Countries
+              <PublicIcon />
             </Link>
-          </Typography>
-          <Typography
-            variant="h6"
-            className={classes.titleDesktop}
-            onClick={() => handleMobileMenuClose('about')}
-          >
+          </IconButton>
+
+          <IconButton color="inherit" className={classes.titleDesktop}>
             <Link to="/about" className={classes.link}>
-              About
+              <InfoIcon />
             </Link>
-          </Typography>
+          </IconButton>
+
           <div className={classes.sectionMobile}>
             <IconButton
               aria-label="show more"
