@@ -15,6 +15,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
@@ -54,6 +55,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '75px',
     minHeight: '75px',
   },
+  tableAvatar: {
+    width: '30px',
+    height: '30px',
+    minWidth: '30px',
+    minHeight: '30px',
+  },
   avatarContainer: {
     width: '90px',
     minWidth: '90px',
@@ -77,9 +84,6 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '1400px',
     backgroundColor: '#80cbc4',
     margin: '0 auto',
-    // position: 'fixed',
-    // top: '80px',
-    // left: 0,
     overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       display: 'none',
@@ -96,48 +100,72 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
+const orderOptions = ['Name', 'Area', 'Population'];
+
+const languages = [
+  { name: 'English', code: 'en' },
+  { name: 'French', code: 'fr' },
+  { name: 'Spanish', code: 'es' },
+  { name: 'German', code: 'de' },
+  { name: 'Dutch', code: 'nl' },
+  { name: 'Portuguese', code: 'pt' },
+  { name: 'Italian', code: 'it' },
+  { name: 'Russian', code: 'ru' },
+  { name: 'Arabic', code: 'ar' },
+];
+
 const MainPage = ({ history }) => {
   const [countriesList, setCountriesList] = useState([]);
   const classes = useStyles();
 
-  const fetchCountries = async () => {
-    const resp = await fetch('https://restcountries.eu/rest/v2/all');
-    const countries = await resp.json();
-    setCountriesList(countries);
+  const fetchData = async (rute = '', option = '') => {
+    const resp = await fetch(
+      `https://restcountries.eu/rest/v2/${rute}${option}`,
+    );
+    const data = await resp.json();
+    setCountriesList(data);
+  };
+
+  const orderList = (option) => {
+    console.log({ option });
+    const originalData = [...countriesList];
+    const newData = originalData.sort((a, b) => {
+      if (option === 'Name') {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) {
+          return -1;
+        }
+        if (a.name.toLowerCase() > b.name.toLowerCase()) {
+          return 1;
+        }
+        return 0;
+      }
+      if (option === 'Area') {
+        if (a.area < b.area) {
+          return 1;
+        }
+        if (a.area > b.area) {
+          return -1;
+        }
+        return 0;
+      }
+      if (a.population < b.population) {
+        return 1;
+      }
+      if (a.population > b.population) {
+        return -1;
+      }
+      return 0;
+    });
+    setCountriesList(newData);
   };
 
   useEffect(() => {
-    fetchCountries();
+    fetchData();
   }, []);
 
   const handleSelectCountry = (option) => {
     history.push(`/countries/details/:${option}`);
-  };
-
-  const fetchByRegion = async (region) => {
-    const resp = await fetch(
-      `https://restcountries.eu/rest/v2/region/${region}`,
-    );
-    const countries = await resp.json();
-    setCountriesList(countries);
-  };
-
-  const fetchByLanguage = async (region) => {
-    const resp = await fetch(`https://restcountries.eu/rest/v2/lang/${region}`);
-    const countries = await resp.json();
-    setCountriesList(countries);
-  };
-
-  const handleFilterByRegion = (option) => {
-    if (option === 'all') {
-      fetchCountries();
-    } else {
-      fetchByRegion(option);
-    }
-  };
-
-  const handleFilterByLanguage = (option) => {
-    fetchByLanguage(option);
   };
 
   return (
@@ -146,140 +174,77 @@ const MainPage = ({ history }) => {
         {countriesList && (
           <>
             <Paper className={classes.paper}>
-              <Typography variant="h6">Filter by:</Typography>
-              <hr />
-              <Typography variant="button">region</Typography>
-              <br />
+              <Typography variant="h6">
+                Filter by:&nbsp;&nbsp;({countriesList.length})
+              </Typography>
+              {/* <hr /> */}
+              <Divider />
               <div style={{ paddingLeft: '20px' }}>
                 <Link
                   component="button"
                   href="/"
                   variant="body2"
-                  onClick={() => handleFilterByRegion('all')}
+                  onClick={() => fetchData('all')}
                 >
                   All
                 </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByRegion('africa')}
-                >
-                  Africa
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByRegion('americas')}
-                >
-                  Americas
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByRegion('asia')}
-                >
-                  Asia
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByRegion('europe')}
-                >
-                  Europe
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByRegion('oceania')}
-                >
-                  Oceania
-                </Link>
               </div>
-              <hr />
+              <br />
+              <Typography variant="button">region</Typography>
+              <br />
+              <div style={{ paddingLeft: '20px' }}>
+                {regions.map((reg) => (
+                  <React.Fragment key={`fragment${reg}`}>
+                    <Link
+                      key={`link${reg}`}
+                      component="button"
+                      href="/"
+                      variant="body2"
+                      onClick={() => fetchData('region/', reg.toLowerCase())}
+                    >
+                      {reg}
+                    </Link>
+                    <br key={`br${reg}`} />
+                  </React.Fragment>
+                ))}
+              </div>
+              <br />
               <Typography variant="button">language</Typography>
               <br />
               <div style={{ paddingLeft: '20px' }}>
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('en')}
-                >
-                  English
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('fr')}
-                >
-                  French
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('es')}
-                >
-                  Spanish
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('de')}
-                >
-                  German
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('pt')}
-                >
-                  Portuguese
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('it')}
-                >
-                  Italian
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('ru')}
-                >
-                  Russian
-                </Link>
-                <br />
-                <Link
-                  component="button"
-                  href="/"
-                  variant="body2"
-                  onClick={() => handleFilterByLanguage('ar')}
-                >
-                  Arabic
-                </Link>
+                {languages.map((lang) => (
+                  <React.Fragment key={`fragment${lang.name}`}>
+                    <Link
+                      key={`link${lang.name}`}
+                      component="button"
+                      href="/"
+                      variant="body2"
+                      onClick={() => fetchData('lang/', lang.code)}
+                    >
+                      {lang.name}
+                    </Link>
+                    <br key={`br${lang.name}`} />
+                  </React.Fragment>
+                ))}
+              </div>
+              <br />
+              <Typography variant="h6">Order by:</Typography>
+              <Divider />
+              <div style={{ paddingLeft: '20px' }}>
+                {orderOptions.map((opt) => (
+                  <React.Fragment key={`fragment${opt}`}>
+                    <Link
+                      key={`link${opt}`}
+                      component="button"
+                      href="/"
+                      variant="body2"
+                      onClick={() => orderList(opt)}
+                    >
+                      {opt}
+                    </Link>
+                    <br key={`br${opt}`} />
+                  </React.Fragment>
+                ))}
               </div>
             </Paper>
             <TableContainer component={Paper} className={classes.tableRoot}>
@@ -290,9 +255,10 @@ const MainPage = ({ history }) => {
               >
                 <TableHead>
                   <TableRow>
+                    <TableCell align="center">#</TableCell>
                     <TableCell align="center">Flag</TableCell>
                     <TableCell align="left">Name</TableCell>
-                    <TableCell align="right">Capital</TableCell>
+                    <TableCell align="left">Capital</TableCell>
                     <TableCell align="right">
                       Area&nbsp;(km<sup>2</sup>)
                     </TableCell>
@@ -301,19 +267,23 @@ const MainPage = ({ history }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {countriesList.map((country) => (
+                  {countriesList.map((country, i) => (
                     <TableRow
                       key={country.name}
                       className={classes.tableRow}
-                      onClick={() => handleSelectCountry(country.name)}
+                      onClick={() =>
+                        handleSelectCountry(country.alpha2Code.toLowerCase())
+                      }
                     >
-                      <TableCell component="th" scope="row">
-                        <Avatar src={country.flag} />
+                      <TableCell align="center">{i + 1}</TableCell>
+                      <TableCell align="center">
+                        <Avatar
+                          src={country.flag}
+                          className={classes.tableAvatar}
+                        />
                       </TableCell>
-                      <TableCell component="th" scope="row">
-                        {country.name}
-                      </TableCell>
-                      <TableCell align="right">{country.capital}</TableCell>
+                      <TableCell align="left">{country.name}</TableCell>
+                      <TableCell align="left">{country.capital}</TableCell>
                       <TableCell align="right">
                         {country.area?.toLocaleString()}
                       </TableCell>
@@ -431,4 +401,5 @@ MainPage.defaultProps = {
   },
 };
 
+// 434
 export default MainPage;

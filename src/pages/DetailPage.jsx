@@ -9,6 +9,16 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
+// import Divider from '@material-ui/core/Divider';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+// import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+// import { array } from 'prop-types';
+// import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -22,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   root: {
-    maxWidth: '768px',
+    maxWidth: '1024px',
     margin: '16px',
     [theme.breakpoints.down('xs')]: {
       margin: '16px 8px',
@@ -37,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: 'inherit',
   },
+  avatar: {
+    margin: '0 auto',
+    // width: '400px',
+    // height: '400px',
+    // minWidth: '400px',
+    // minHeight: '400px',
+  },
 }));
 
 const DetailPage = ({ history = {} }) => {
@@ -46,27 +63,117 @@ const DetailPage = ({ history = {} }) => {
   useEffect(() => {
     (async () => {
       const name = history.location.pathname.split('/')[3].replace(':', '');
-      const resp = await fetch(`https://restcountries.eu/rest/v2/name/${name}`);
+      console.log({ name });
+      const resp = await fetch(
+        `https://restcountries.eu/rest/v2/alpha/${name}`,
+      );
       const c = await resp.json();
-      setCountry(c[0]);
+      setCountry(c);
     })();
   }, []);
+
+  // const trans =
+  if (country.translations) {
+    const keys = Object.keys(country.translations);
+    const values = Object.values(country.translations);
+    console.log(keys);
+    console.log(values);
+    console.log(Object.entries(country.translations));
+    const array = Object.entries(country.translations).map(
+      (item) => `${item[0]}: ${item[1]}`,
+    );
+    console.log(array);
+
+    // for(let i = 0; i < keys.length; i++){
+    //   array.push(`"${keys[i]}": "${values[i]}"`)
+    // }
+    // console.log(array);
+    // for (let prop in country.translations) {
+    //   console.log(prop);
+    // }
+  }
 
   return (
     <div className={classes.container}>
       {country && (
         <Card className={classes.root}>
           {/* <CardActionArea> */}
-          <CardMedia
-            component="img"
-            alt={country.name}
-            image={country.flag}
-            title={country.name}
-          />
           <CardContent>
-            <Typography gutterBottom variant="h4">
-              {country.name}
-            </Typography>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <CardMedia
+                component="img"
+                alt={country.name}
+                image={country.flag}
+                title={country.name}
+                style={{
+                  heigh: '400px',
+                  maxHeight: '400px',
+                  width: '400px',
+                  maxWidth: '400px',
+                  marginRight: '16px',
+                }}
+              />
+              <Typography gutterBottom variant="h4" align="center">
+                {country.name}
+              </Typography>
+            </div>
+            <br />
+            <TableContainer component={Paper} className={classes.tableRoot}>
+              <Table
+                // className={classes.table}
+                aria-label="simple table"
+              >
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left" variant="head">
+                      Native name
+                    </TableCell>
+                    <TableCell align="left">{country.nativeName}.</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      align="left"
+                      variant="head"
+                      style={{ minWidth: 'max-content' }}
+                    >
+                      Alternative spelling
+                    </TableCell>
+                    <TableCell align="left">
+                      {country.altSpellings?.map(
+                        (spe, i) =>
+                          `${spe}${
+                            i !== country.altSpellings.length - 1 ? ', ' : '.'
+                          }`,
+                      )}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left" variant="head">
+                      Translations
+                    </TableCell>
+                    <TableCell align="left">
+                      {country.translations &&
+                        Object.entries(country.translations).map((tr) => (
+                          <span>
+                            <strong>{tr[0]}:</strong> {tr[1]},&nbsp;
+                          </span>
+                        ))}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            {/* <Divider />
+            <Typography gutterBottom variant="subtitle2">
+              Native name
+            </Typography> */}
+          </CardContent>
+          {/* <CardContent>
             <Typography gutterBottom variant="body2">
               <strong>Native name: </strong>
               {country.nativeName}
@@ -79,7 +186,6 @@ const DetailPage = ({ history = {} }) => {
               <strong>Capital: </strong>
               {country.capital}
             </Typography>
-            {/* <hr /> */}
             <div className={classes.inline}>
               <Typography gutterBottom variant="body2">
                 <strong>Region: </strong>
@@ -129,7 +235,11 @@ const DetailPage = ({ history = {} }) => {
                     <br />
                     <strong>Name </strong>&nbsp;
                     {cur.name}
-                    {index !== country.currencies.length - 1 && <hr />}
+                    {index !== country.currencies.length - 1 && (
+                      <>
+                        <br /> <br />
+                      </>
+                    )}
                   </span>
                 ))}
             </Typography>
@@ -146,7 +256,7 @@ const DetailPage = ({ history = {} }) => {
                 })}
             </Typography>
             <hr />
-          </CardContent>
+          </CardContent> */}
           <CardActions>
             <Link to="/countries" className={classes.link}>
               <Button size="small" color="primary">
