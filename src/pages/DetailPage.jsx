@@ -1,272 +1,203 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-// import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-// import Divider from '@material-ui/core/Divider';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-// import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-// import { array } from 'prop-types';
-// import Avatar from '@material-ui/core/Avatar';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  CardActions,
+  CardMedia,
+  Button,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    width: '100%',
-    // height: '100%',
-    // padding: '20px',
-    // backgroundColor: 'pink',
+const useStyles = makeStyles(() => ({
+  stLink: {
+    textDecoration: 'none',
+    color: 'inherit',
+  },
+  stRoot: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    padding: '16px',
   },
-  root: {
+  stPaper: {
+    height: 'calc(100vh - 128px)',
     maxWidth: '1024px',
-    margin: '16px',
-    [theme.breakpoints.down('xs')]: {
-      margin: '16px 8px',
-    },
-  },
-  inline: {
+    minWidth: '1024px',
+    padding: '16px',
     display: 'flex',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
   },
-  link: {
-    textDecoration: 'none',
-    color: 'inherit',
+  stHead: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
-  avatar: {
-    margin: '0 auto',
-    // width: '400px',
-    // height: '400px',
-    // minWidth: '400px',
-    // minHeight: '400px',
+  stBody: {
+    marginTop: '16px',
+    flexGrow: 1,
+    overflowY: 'scroll',
+    border: '1px solid #eee',
+    borderRadius: '5px',
+  },
+  stCellSize: {
+    minWidth: '125px',
+    width: '125px',
+    padding: '8px 16px',
+  },
+  stCellPadding: {
+    padding: '8px 16px',
   },
 }));
 
+const formatData = (o) => {
+  const newData = [
+    { title: 'Native name', value: o.nativeName },
+    {
+      title: 'Alternative spelling',
+      value: `${o.altSpellings.map(
+        (spe, i) => `${i === 0 ? spe : ` ${spe}`}`,
+      )}`,
+    },
+    {
+      title: 'Translations',
+      value: `French: "${o.translations.fr}", Spanish: "${o.translations.es}", German: "${o.translations.de}", Japanesse: "${o.translations.ja}", Portuguese: "${o.translations.pt}", Italian: "${o.translations.it}", Breton: "${o.translations.br}"`,
+    },
+    { title: 'Demonym', value: o.demonym },
+    { title: 'Region', value: o.region },
+    { title: 'Subregion', value: o.subregion },
+    {
+      title: 'Languages',
+      value: `${o.languages.map(
+        (lng, i) => `${i === 0 ? lng.name : ` ${lng.name}`}`,
+      )}`,
+    },
+    { title: 'Capital', value: o.capital },
+    { title: 'Numeric Code', value: o.numericCode },
+    { title: 'Alpha codes', value: `${o.alpha2Code} - ${o.alpha3Code}` },
+    {
+      title: 'Top level domains',
+      value: `${o.topLevelDomain.map(
+        (tld, i) => `${i === 0 ? tld : ` ${tld}`}`,
+      )}`,
+    },
+    {
+      title: 'Calling codes',
+      value: `${o.callingCodes.map(
+        (clc, i) => `${i === 0 ? clc : ` ${clc}`}`,
+      )}`,
+    },
+    { title: 'Area', value: `${o.area.toLocaleString()} km\u00B2` },
+    {
+      title: 'Location',
+      value: `Lat: ${o.latlng[1]}\u00B0, Long: ${o.latlng[0]}\u00B0`,
+    },
+    {
+      title: 'Time zones',
+      value: `${o.timezones.map((tmz, i) => `${i === 0 ? tmz : ` ${tmz}`}`)}`,
+    },
+    { title: 'Population', value: o.population.toLocaleString() },
+    {
+      title: 'Currencies',
+      value: `${o.currencies.map(
+        (cur, i) =>
+          `${
+            i === 0
+              ? `${cur.symbol} - ${cur.code} - ${cur.name}`
+              : ` ${cur.symbol} - ${cur.code} - ${cur.name}`
+          }`,
+      )}`,
+    },
+  ];
+  return newData;
+};
+
 const DetailPage = ({ history = {} }) => {
   const [country, setCountry] = useState({});
+  const [data, setData] = useState([]);
   const classes = useStyles();
 
   useEffect(() => {
     (async () => {
       const name = history.location.pathname.split('/')[3].replace(':', '');
-      console.log({ name });
       const resp = await fetch(
         `https://restcountries.eu/rest/v2/alpha/${name}`,
       );
       const c = await resp.json();
       setCountry(c);
+      setData(formatData(c));
     })();
   }, []);
 
-  // const trans =
-  if (country.translations) {
-    const keys = Object.keys(country.translations);
-    const values = Object.values(country.translations);
-    console.log(keys);
-    console.log(values);
-    console.log(Object.entries(country.translations));
-    const array = Object.entries(country.translations).map(
-      (item) => `${item[0]}: ${item[1]}`,
-    );
-    console.log(array);
-
-    // for(let i = 0; i < keys.length; i++){
-    //   array.push(`"${keys[i]}": "${values[i]}"`)
-    // }
-    // console.log(array);
-    // for (let prop in country.translations) {
-    //   console.log(prop);
-    // }
-  }
-
   return (
-    <div className={classes.container}>
-      {country && (
-        <Card className={classes.root}>
-          {/* <CardActionArea> */}
-          <CardContent>
-            <div
+    <>
+      <div className={classes.stRoot}>
+        <Paper className={classes.stPaper}>
+          <div className={classes.stHead}>
+            <CardMedia
+              component="img"
+              alt={country.name}
+              image={country.flag}
+              title={country.name}
               style={{
-                display: 'flex',
-                alignItems: 'center',
+                heigh: '400px',
+                maxHeight: '400px',
+                width: '400px',
+                maxWidth: '400px',
+                marginRight: '16px',
+                border: '1px solid #eee',
               }}
-            >
-              <CardMedia
-                component="img"
-                alt={country.name}
-                image={country.flag}
-                title={country.name}
-                style={{
-                  heigh: '400px',
-                  maxHeight: '400px',
-                  width: '400px',
-                  maxWidth: '400px',
-                  marginRight: '16px',
-                }}
-              />
-              <Typography gutterBottom variant="h4" align="center">
-                {country.name}
-              </Typography>
-            </div>
-            <br />
-            <TableContainer component={Paper} className={classes.tableRoot}>
-              <Table
-                // className={classes.table}
-                aria-label="simple table"
-              >
+            />
+            <Typography gutterBottom variant="h3" align="center">
+              {country.name}
+            </Typography>
+            <CardActions>
+              <Link to="/countries" className={classes.stLink}>
+                <Button size="small" color="primary">
+                  back to countries
+                </Button>
+              </Link>
+            </CardActions>
+          </div>
+
+          <div className={classes.stBody}>
+            <TableContainer component={Paper}>
+              <Table aria-label="simple table">
                 <TableBody>
-                  <TableRow>
-                    <TableCell align="left" variant="head">
-                      Native name
-                    </TableCell>
-                    <TableCell align="left">{country.nativeName}.</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell
-                      align="left"
-                      variant="head"
-                      style={{ minWidth: 'max-content' }}
-                    >
-                      Alternative spelling
-                    </TableCell>
-                    <TableCell align="left">
-                      {country.altSpellings?.map(
-                        (spe, i) =>
-                          `${spe}${
-                            i !== country.altSpellings.length - 1 ? ', ' : '.'
-                          }`,
-                      )}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell align="left" variant="head">
-                      Translations
-                    </TableCell>
-                    <TableCell align="left">
-                      {country.translations &&
-                        Object.entries(country.translations).map((tr) => (
-                          <span>
-                            <strong>{tr[0]}:</strong> {tr[1]},&nbsp;
-                          </span>
-                        ))}
-                    </TableCell>
-                  </TableRow>
+                  {data &&
+                    data.map((d) => (
+                      <TableRow key={d.title}>
+                        <TableCell
+                          align="left"
+                          variant="head"
+                          className={classes.stCellSize}
+                        >
+                          {d.title}
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          className={classes.stCellPadding}
+                        >
+                          {d.value}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* <Divider />
-            <Typography gutterBottom variant="subtitle2">
-              Native name
-            </Typography> */}
-          </CardContent>
-          {/* <CardContent>
-            <Typography gutterBottom variant="body2">
-              <strong>Native name: </strong>
-              {country.nativeName}
-            </Typography>
-            <Typography gutterBottom variant="body2">
-              <strong>Denonym: </strong>
-              {country.demonym}
-            </Typography>
-            <Typography gutterBottom variant="body2">
-              <strong>Capital: </strong>
-              {country.capital}
-            </Typography>
-            <div className={classes.inline}>
-              <Typography gutterBottom variant="body2">
-                <strong>Region: </strong>
-                {country.region}
-              </Typography>
-              <Typography gutterBottom variant="body2">
-                <strong>Subregion: </strong>
-                {country.subregion}
-              </Typography>
-            </div>
-            <hr />
-            <Typography gutterBottom variant="body2">
-              <strong>Languages: </strong>
-              {country.languages &&
-                country.languages.map((lang, index) => {
-                  let l = lang.iso639_2.toUpperCase();
-                  if (index !== country.languages.length - 1) {
-                    l += ' - ';
-                  }
-                  return l;
-                })}
-            </Typography>
-            <div className={classes.inline}>
-              <Typography gutterBottom variant="body2">
-                <strong>Area: </strong>
-                {country.area?.toLocaleString()} km<sup>2</sup>
-              </Typography>
-              <Typography gutterBottom variant="body2">
-                <strong>Population: </strong>
-                {country.population?.toLocaleString()}
-              </Typography>
-            </div>
-            <hr />
-            <Typography gutterBottom variant="body2">
-              <strong>Currencies: </strong>
-              {country.currencies &&
-                country.currencies.map((cur, index) => (
-                  <span
-                    style={{ marginLeft: '24px', display: 'block' }}
-                    key={cur.code}
-                  >
-                    <strong>Code </strong>&nbsp;
-                    {cur.code}
-                    <br />
-                    <strong>Symbol </strong>&nbsp;
-                    {cur.symbol}
-                    <br />
-                    <strong>Name </strong>&nbsp;
-                    {cur.name}
-                    {index !== country.currencies.length - 1 && (
-                      <>
-                        <br /> <br />
-                      </>
-                    )}
-                  </span>
-                ))}
-            </Typography>
-            <hr />
-            <Typography gutterBottom variant="body2">
-              <strong>Timezones: </strong>
-              {country.timezones &&
-                country.timezones.map((time, index) => {
-                  let tz = time;
-                  if (index !== country.timezones.length - 1) {
-                    tz += ', ';
-                  }
-                  return tz;
-                })}
-            </Typography>
-            <hr />
-          </CardContent> */}
-          <CardActions>
-            <Link to="/countries" className={classes.link}>
-              <Button size="small" color="primary">
-                back to countries
-              </Button>
-            </Link>
-          </CardActions>
-        </Card>
-      )}
-    </div>
+          </div>
+        </Paper>
+      </div>
+    </>
   );
 };
 
