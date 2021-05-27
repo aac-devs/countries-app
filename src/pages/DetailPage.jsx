@@ -14,20 +14,21 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
+import formatDetailData from '../helpers/formatDetailData';
 
 const useStyles = makeStyles(() => ({
-  stLink: {
+  link: {
     textDecoration: 'none',
     color: 'inherit',
   },
-  stRoot: {
+  root: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: '16px',
   },
-  stPaper: {
+  paper: {
     height: 'calc(100vh - 128px)',
     maxWidth: '1024px',
     minWidth: '1024px',
@@ -37,89 +38,45 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
   },
-  stHead: {
+  head: {
     display: 'flex',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'stretch',
   },
-  stBody: {
+  body: {
     marginTop: '16px',
     flexGrow: 1,
     overflowY: 'scroll',
     border: '1px solid #eee',
     borderRadius: '5px',
   },
-  stCellSize: {
+  cellSize: {
     minWidth: '125px',
     width: '125px',
     padding: '8px 16px',
   },
-  stCellPadding: {
+  cellPadding: {
     padding: '8px 16px',
   },
+  card: {
+    heigh: '400px',
+    maxHeight: '400px',
+    width: '400px',
+    maxWidth: '400px',
+    marginRight: '16px',
+    border: '1px solid #eee',
+  },
+  headBody: {
+    flexGrow: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
+  name: {},
+  button: {
+    alignSelf: 'flex-end',
+  },
 }));
-
-const formatData = (o) => {
-  const newData = [
-    { title: 'Native name', value: o.nativeName },
-    {
-      title: 'Alternative spelling',
-      value: `${o.altSpellings.map(
-        (spe, i) => `${i === 0 ? spe : ` ${spe}`}`,
-      )}`,
-    },
-    {
-      title: 'Translations',
-      value: `French: "${o.translations.fr}", Spanish: "${o.translations.es}", German: "${o.translations.de}", Japanesse: "${o.translations.ja}", Portuguese: "${o.translations.pt}", Italian: "${o.translations.it}", Breton: "${o.translations.br}"`,
-    },
-    { title: 'Demonym', value: o.demonym },
-    { title: 'Region', value: o.region },
-    { title: 'Subregion', value: o.subregion },
-    {
-      title: 'Languages',
-      value: `${o.languages.map(
-        (lng, i) => `${i === 0 ? lng.name : ` ${lng.name}`}`,
-      )}`,
-    },
-    { title: 'Capital', value: o.capital },
-    { title: 'Numeric Code', value: o.numericCode },
-    { title: 'Alpha codes', value: `${o.alpha2Code} - ${o.alpha3Code}` },
-    {
-      title: 'Top level domains',
-      value: `${o.topLevelDomain.map(
-        (tld, i) => `${i === 0 ? tld : ` ${tld}`}`,
-      )}`,
-    },
-    {
-      title: 'Calling codes',
-      value: `${o.callingCodes.map(
-        (clc, i) => `${i === 0 ? clc : ` ${clc}`}`,
-      )}`,
-    },
-    { title: 'Area', value: `${o.area.toLocaleString()} km\u00B2` },
-    {
-      title: 'Location',
-      value: `Lat: ${o.latlng[1]}\u00B0, Long: ${o.latlng[0]}\u00B0`,
-    },
-    {
-      title: 'Time zones',
-      value: `${o.timezones.map((tmz, i) => `${i === 0 ? tmz : ` ${tmz}`}`)}`,
-    },
-    { title: 'Population', value: o.population.toLocaleString() },
-    {
-      title: 'Currencies',
-      value: `${o.currencies.map(
-        (cur, i) =>
-          `${
-            i === 0
-              ? `${cur.symbol} - ${cur.code} - ${cur.name}`
-              : ` ${cur.symbol} - ${cur.code} - ${cur.name}`
-          }`,
-      )}`,
-    },
-  ];
-  return newData;
-};
 
 const DetailPage = ({ history = {} }) => {
   const [country, setCountry] = useState({});
@@ -132,44 +89,39 @@ const DetailPage = ({ history = {} }) => {
       const resp = await fetch(
         `https://restcountries.eu/rest/v2/alpha/${name}`,
       );
-      const c = await resp.json();
-      setCountry(c);
-      setData(formatData(c));
+      const detailData = await resp.json();
+      setCountry(detailData);
+      setData(formatDetailData(detailData));
     })();
   }, []);
 
   return (
     <>
-      <div className={classes.stRoot}>
-        <Paper className={classes.stPaper}>
-          <div className={classes.stHead}>
+      <div className={classes.root}>
+        <Paper className={classes.paper}>
+          <div className={classes.head}>
             <CardMedia
               component="img"
               alt={country.name}
               image={country.flag}
               title={country.name}
-              style={{
-                heigh: '400px',
-                maxHeight: '400px',
-                width: '400px',
-                maxWidth: '400px',
-                marginRight: '16px',
-                border: '1px solid #eee',
-              }}
+              className={classes.card}
             />
-            <Typography gutterBottom variant="h3" align="center">
-              {country.name}
-            </Typography>
-            <CardActions>
-              <Link to="/countries" className={classes.stLink}>
-                <Button size="small" color="primary">
-                  back to countries
-                </Button>
-              </Link>
-            </CardActions>
+            <div className={classes.headBody}>
+              <Typography gutterBottom variant="h3" align="center">
+                {country.name}
+              </Typography>
+              <CardActions className={classes.button}>
+                <Link to="/countries" className={classes.link}>
+                  <Button size="small" color="primary">
+                    back to countries
+                  </Button>
+                </Link>
+              </CardActions>
+            </div>
           </div>
 
-          <div className={classes.stBody}>
+          <div className={classes.body}>
             <TableContainer component={Paper}>
               <Table aria-label="simple table">
                 <TableBody>
@@ -179,14 +131,11 @@ const DetailPage = ({ history = {} }) => {
                         <TableCell
                           align="left"
                           variant="head"
-                          className={classes.stCellSize}
+                          className={classes.cellSize}
                         >
                           {d.title}
                         </TableCell>
-                        <TableCell
-                          align="left"
-                          className={classes.stCellPadding}
-                        >
+                        <TableCell align="left" className={classes.cellPadding}>
                           {d.value}
                         </TableCell>
                       </TableRow>

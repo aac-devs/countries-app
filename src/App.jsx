@@ -1,11 +1,14 @@
 import { ThemeProvider } from '@material-ui/core/styles';
 import Router from './AppRouter';
+import { CountriesProvider } from './contexts/CountriesContext';
 import theme from './themeConfig';
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Router />
+      <CountriesProvider>
+        <Router />
+      </CountriesProvider>
     </ThemeProvider>
   );
 };

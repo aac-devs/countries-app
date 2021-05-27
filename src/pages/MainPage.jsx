@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -16,6 +16,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Link from '@material-ui/core/Link';
 import Divider from '@material-ui/core/Divider';
+import CountriesContext from '../contexts/CountriesContext';
 
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
@@ -116,53 +117,49 @@ const languages = [
 ];
 
 const MainPage = ({ history }) => {
-  const [countriesList, setCountriesList] = useState([]);
   const classes = useStyles();
+  const countriesList = useContext(CountriesContext);
 
-  const fetchData = async (rute = '', option = '') => {
-    const resp = await fetch(
-      `https://restcountries.eu/rest/v2/${rute}${option}`,
-    );
-    const data = await resp.json();
-    setCountriesList(data);
-  };
+  // const fetchData = async (rute = '', option = '') => {
+  //   const resp = await fetch(
+  //     `https://restcountries.eu/rest/v2/${rute}${option}`,
+  //   );
+  //   const data = await resp.json();
+  //   setCountriesList(data);
+  // };
 
-  const orderList = (option) => {
-    console.log({ option });
-    const originalData = [...countriesList];
-    const newData = originalData.sort((a, b) => {
-      if (option === 'Name') {
-        if (a.name.toLowerCase() < b.name.toLowerCase()) {
-          return -1;
-        }
-        if (a.name.toLowerCase() > b.name.toLowerCase()) {
-          return 1;
-        }
-        return 0;
-      }
-      if (option === 'Area') {
-        if (a.area < b.area) {
-          return 1;
-        }
-        if (a.area > b.area) {
-          return -1;
-        }
-        return 0;
-      }
-      if (a.population < b.population) {
-        return 1;
-      }
-      if (a.population > b.population) {
-        return -1;
-      }
-      return 0;
-    });
-    setCountriesList(newData);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // const orderList = (option) => {
+  //   console.log({ option });
+  //   const originalData = [...countriesList];
+  //   const newData = originalData.sort((a, b) => {
+  //     if (option === 'Name') {
+  //       if (a.name.toLowerCase() < b.name.toLowerCase()) {
+  //         return -1;
+  //       }
+  //       if (a.name.toLowerCase() > b.name.toLowerCase()) {
+  //         return 1;
+  //       }
+  //       return 0;
+  //     }
+  //     if (option === 'Area') {
+  //       if (a.area < b.area) {
+  //         return 1;
+  //       }
+  //       if (a.area > b.area) {
+  //         return -1;
+  //       }
+  //       return 0;
+  //     }
+  //     if (a.population < b.population) {
+  //       return 1;
+  //     }
+  //     if (a.population > b.population) {
+  //       return -1;
+  //     }
+  //     return 0;
+  //   });
+  //   setCountriesList(newData);
+  // };
 
   const handleSelectCountry = (option) => {
     history.push(`/countries/details/:${option}`);
@@ -184,7 +181,7 @@ const MainPage = ({ history }) => {
                   component="button"
                   href="/"
                   variant="body2"
-                  onClick={() => fetchData('all')}
+                  // onClick={() => fetchData('all')}
                 >
                   All
                 </Link>
@@ -200,7 +197,7 @@ const MainPage = ({ history }) => {
                       component="button"
                       href="/"
                       variant="body2"
-                      onClick={() => fetchData('region/', reg.toLowerCase())}
+                      // onClick={() => fetchData('region/', reg.toLowerCase())}
                     >
                       {reg}
                     </Link>
@@ -219,7 +216,7 @@ const MainPage = ({ history }) => {
                       component="button"
                       href="/"
                       variant="body2"
-                      onClick={() => fetchData('lang/', lang.code)}
+                      // onClick={() => fetchData('lang/', lang.code)}
                     >
                       {lang.name}
                     </Link>
@@ -238,7 +235,7 @@ const MainPage = ({ history }) => {
                       component="button"
                       href="/"
                       variant="body2"
-                      onClick={() => orderList(opt)}
+                      // onClick={() => orderList(opt)}
                     >
                       {opt}
                     </Link>
