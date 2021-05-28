@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
