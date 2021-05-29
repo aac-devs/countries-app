@@ -1,20 +1,21 @@
-import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useContext, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  CardActions,
-  CardMedia,
-  Button,
-  Typography,
+  // Avatar,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  // Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
   Paper,
+  Typography,
 } from '@material-ui/core';
-import formatDetailData from '../helpers/formatDetailData';
+import CountriesContext from '../contexts/CountriesContext';
 
 const useStyles = makeStyles(() => ({
   link: {
@@ -77,30 +78,64 @@ const useStyles = makeStyles(() => ({
   button: {
     alignSelf: 'flex-end',
   },
+  formControl: {
+    minWidth: '350px',
+    maxWidth: '350px',
+    width: '350px',
+    alignSelf: 'flex-end',
+  },
+  title: {
+    margin: '0 auto',
+    marginBottom: '8px',
+  },
 }));
 
-const DetailPage = ({ history = {} }) => {
-  const [country, setCountry] = useState({});
-  const [data, setData] = useState([]);
+const StatsPage = () => {
   const classes = useStyles();
+  const { regions } = useContext(CountriesContext);
+  const [regionList, setRegionList] = useState([]);
+  const [regionSelected, setRegionSelected] = useState('');
 
   useEffect(() => {
-    (async () => {
-      const name = history.location.pathname.split('/')[3].replace(':', '');
-      const resp = await fetch(
-        `https://restcountries.eu/rest/v2/alpha/${name}`,
-      );
-      const detailData = await resp.json();
-      setCountry(detailData);
-      setData(formatDetailData(detailData));
-    })();
-  }, []);
+    if (regions) {
+      const array = Object.keys(regions).map((reg) => reg);
+      array.unshift('World');
+      setRegionList(array);
+      setRegionSelected('World');
+    }
+  }, [regions]);
+
+  useEffect(() => {
+    console.log('Estadisticas de', regionSelected);
+  }, [regionSelected]);
 
   return (
     <>
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <div className={classes.head}>
+          <Typography variant="h4" className={classes.title}>
+            Statistics
+          </Typography>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label">
+              Select Region
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={regionSelected}
+              onChange={(e) => setRegionSelected(e.target.value)}
+              label="Select Region"
+            >
+              {regionList &&
+                regionList.map((reg) => (
+                  <MenuItem value={reg} key={reg}>
+                    {reg}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
+          {/* <div className={classes.head}>
             <CardMedia
               component="img"
               alt={country.name}
@@ -120,13 +155,13 @@ const DetailPage = ({ history = {} }) => {
                 </Link>
               </CardActions>
             </div>
-          </div>
+          </div> */}
 
           <div className={classes.body}>
             <TableContainer component={Paper}>
               <Table aria-label="simple table">
                 <TableBody>
-                  {data &&
+                  {/* {data &&
                     data.map((d) => (
                       <TableRow key={d.title}>
                         <TableCell
@@ -140,7 +175,23 @@ const DetailPage = ({ history = {} }) => {
                           {d.value}
                         </TableCell>
                       </TableRow>
-                    ))}
+                    ))} */}
+                  <TableRow>
+                    <TableCell
+                      align="left"
+                      variant="head"
+                      className={classes.cellSize}
+                    >
+                      columna 1
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      // variant="head"
+                      className={classes.cellPadding}
+                    >
+                      columna 2
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
@@ -151,49 +202,4 @@ const DetailPage = ({ history = {} }) => {
   );
 };
 
-DetailPage.propTypes = {
-  history: PropTypes.objectOf(
-    PropTypes.shape({
-      action: PropTypes.string,
-      block: PropTypes.func,
-      createHref: PropTypes.func,
-      go: PropTypes.func,
-      goBack: PropTypes.func,
-      goForward: PropTypes.func,
-      length: PropTypes.number,
-      listen: PropTypes.func,
-      location: PropTypes.objectOf({
-        hash: PropTypes.string,
-        pathname: PropTypes.string,
-        search: PropTypes.string,
-        state: PropTypes.string,
-      }),
-
-      push: PropTypes.func,
-      replace: PropTypes.func,
-    }),
-  ),
-};
-
-DetailPage.defaultProps = {
-  history: {
-    action: '',
-    block: () => {},
-    createHref: () => {},
-    go: () => {},
-    goBack: () => {},
-    goForward: () => {},
-    length: 0,
-    listen: () => {},
-    location: {
-      hash: '',
-      pathname: '',
-      search: '',
-      state: '',
-    },
-    push: () => {},
-    replace: () => {},
-  },
-};
-
-export default DetailPage;
+export default StatsPage;

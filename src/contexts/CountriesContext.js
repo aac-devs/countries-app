@@ -17,9 +17,19 @@ const getRegions = (list) => {
   return regions;
 };
 
+const initialState = {
+  region: 'World',
+  subregion: 'All',
+  language: 'None',
+  orderBy: 'None',
+  orderSense: 'up-to-down',
+};
+
 const CountriesProvider = ({ children }) => {
   const [countries, setCountries] = useState([]);
   const [regions, setRegions] = useState({});
+  const [mutations, setMutations] = useState(initialState);
+  const [search, setSearch] = useState('');
 
   const fetchData = async () => {
     const resp = await fetch(`https://restcountries.eu/rest/v2/all`);
@@ -38,12 +48,26 @@ const CountriesProvider = ({ children }) => {
     }
   }, [countries]);
 
+  const resetMutations = () => {
+    setMutations(initialState);
+  };
+
   return (
-    <div>
-      <CountriesContext.Provider value={{ countries, regions }}>
+    <>
+      <CountriesContext.Provider
+        value={{
+          countries,
+          regions,
+          mutations,
+          setMutations,
+          resetMutations,
+          search,
+          setSearch,
+        }}
+      >
         {children}
       </CountriesContext.Provider>
-    </div>
+    </>
   );
 };
 

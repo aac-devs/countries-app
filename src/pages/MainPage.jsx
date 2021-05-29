@@ -16,21 +16,29 @@ import {
   MenuItem,
   Select,
   Button,
+  Typography,
 } from '@material-ui/core';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+
 import {
   ArrowUpward as ArrowUpwardIcon,
   ArrowDownward as ArrowDownwardIcon,
 } from '@material-ui/icons';
 import CountriesContext from '../contexts/CountriesContext';
-import mutatingCountryList, { languages } from '../helpers/mutatingData';
+import mutatingCountryList, {
+  languages,
+  searchCountryCapital,
+} from '../helpers/mutatingData';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: '16px',
+    opacity: '0.7',
   },
   tableRow: {
     cursor: 'pointer',
@@ -69,33 +77,56 @@ const useStyles = makeStyles(() => ({
     maxWidth: '225px',
     width: '225px',
   },
+  title: {
+    margin: '0 auto',
+    marginBottom: '8px',
+  },
+  search: {
+    position: 'relative',
+    borderRadius: '5px',
+    alignSelf: 'flex-end',
+    border: '1px solid #ccc',
+    marginTop: '16px',
+    width: '30%',
+    '&:hover': {
+      backgroundColor: '#eee',
+    },
+  },
+  searchIcon: {
+    padding: '0 16px',
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    padding: '8px 8px 8px 0',
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    width: '100%',
+  },
 }));
 
 const MainPage = ({ history }) => {
   const classes = useStyles();
-  const { countries, regions } = useContext(CountriesContext);
+  const {
+    countries,
+    regions,
+    mutations,
+    setMutations,
+    resetMutations,
+    search,
+    setSearch,
+  } = useContext(CountriesContext);
   const [countriesList, setCountriesList] = useState(countries);
-  const [regionSelected, setRegionSelected] = useState('World');
-  const [subregionSelected, setSubregionSelected] = useState('All');
-  const [languageSelected, setLanguageSelected] = useState('None');
-  const [orderBy, setOrderBy] = useState('None');
-  const [orderSense, setOrderSense] = useState('up-to-down');
+  const [searchStimulus, setSearchStimulus] = useState(false);
 
   const handleSelectCountry = (option) => {
     history.push(`/countries/details/:${option}`);
-  };
-
-  const handleRegionChange = ({ target: { value: reg } }) => {
-    setRegionSelected(reg);
-    setSubregionSelected('All');
-  };
-
-  const handleOrderSense = () => {
-    if (orderSense === 'up-to-down') {
-      setOrderSense('down-to-up');
-    } else {
-      setOrderSense('up-to-down');
-    }
   };
 
   useEffect(() => {
@@ -103,29 +134,31 @@ const MainPage = ({ history }) => {
   }, [countries]);
 
   useEffect(() => {
-    const newList = mutatingCountryList(
-      countries,
-      regionSelected,
-      subregionSelected,
-      languageSelected,
-      orderBy,
-      orderSense,
-    );
-    setCountriesList(newList);
-  }, [
-    regionSelected,
-    subregionSelected,
-    languageSelected,
-    orderBy,
-    orderSense,
-  ]);
+    setCountriesList(mutatingCountryList(countries, mutations));
+    setSearchStimulus(false);
+  }, [mutations]);
 
-  // TODO: Falta poner un título que muestre las opciones seleccionadas y la cantidad de paises devueltos
+  useEffect(() => {
+    if (search.length >= 3) {
+      setCountriesList(searchCountryCapital(countries, search.toLowerCase()));
+    }
+    if (search.length === 0 && searchStimulus) {
+      setCountriesList(countries);
+    }
+  }, [search]);
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setSearchStimulus(true);
+  };
 
   return (
     <>
       <div className={classes.root}>
         <Paper className={classes.paper}>
+          <Typography variant="h4" className={classes.title}>
+            Countries list [{countriesList.length}]
+          </Typography>
           <div className={classes.head}>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel id="demo-simple-select-outlined-label">
@@ -134,8 +167,15 @@ const MainPage = ({ history }) => {
               <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={regionSelected}
-                onChange={handleRegionChange}
+                value={mutations.region}
+                onChange={(e) =>
+                  setMutations({
+                    ...mutations,
+                    region: e.target.value,
+                    subregion: 'All',
+                  })
+                }
+                onClick={() => setSearch('')}
                 label="Select Region"
               >
                 <MenuItem value="World">World</MenuItem>
@@ -154,13 +194,19 @@ const MainPage = ({ history }) => {
               <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={subregionSelected}
-                onChange={(e) => setSubregionSelected(e.target.value)}
+                value={mutations.subregion}
+                onChange={(e) =>
+                  setMutations({
+                    ...mutations,
+                    subregion: e.target.value,
+                  })
+                }
+                onClick={() => setSearch('')}
                 label="Select Sub-region"
               >
                 <MenuItem value="All">All</MenuItem>
-                {regions[regionSelected] &&
-                  regions[regionSelected].map((sub) => (
+                {regions[mutations.region] &&
+                  regions[mutations.region].map((sub) => (
                     <MenuItem value={sub} key={sub}>
                       {sub}
                     </MenuItem>
@@ -174,8 +220,14 @@ const MainPage = ({ history }) => {
               <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={languageSelected}
-                onChange={(e) => setLanguageSelected(e.target.value)}
+                value={mutations.language}
+                onChange={(e) =>
+                  setMutations({
+                    ...mutations,
+                    language: e.target.value,
+                  })
+                }
+                onClick={() => setSearch('')}
                 label="Select Language"
               >
                 <MenuItem value="None">None</MenuItem>
@@ -193,8 +245,14 @@ const MainPage = ({ history }) => {
               <Select
                 labelId="demo-simple-select-outlined-label"
                 id="demo-simple-select-outlined"
-                value={orderBy}
-                onChange={(e) => setOrderBy(e.target.value)}
+                value={mutations.orderBy}
+                onChange={(e) =>
+                  setMutations({
+                    ...mutations,
+                    orderBy: e.target.value,
+                  })
+                }
+                onClick={() => setSearch('')}
                 label="Order by"
               >
                 <MenuItem value="None">None</MenuItem>
@@ -203,15 +261,46 @@ const MainPage = ({ history }) => {
                 <MenuItem value="Population">Population</MenuItem>
               </Select>
             </FormControl>
-            <Button variant="outlined" onClick={handleOrderSense}>
-              {orderSense === 'up-to-down' ? (
+            <Button
+              variant="outlined"
+              onClick={() =>
+                setMutations({
+                  ...mutations,
+                  orderSense:
+                    mutations.orderSense === 'up-to-down'
+                      ? 'down-to-up'
+                      : 'up-to-down',
+                })
+              }
+            >
+              {mutations.orderSense === 'up-to-down' ? (
                 <ArrowDownwardIcon />
               ) : (
                 <ArrowUpwardIcon />
               )}
             </Button>
           </div>
+
           <Divider />
+
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              value={search}
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ 'aria-label': 'search' }}
+              onChange={handleSearchChange}
+              // onClick={() => setSearch('')}
+              onClick={resetMutations}
+            />
+          </div>
+
           <div className={classes.body}>
             <TableContainer
               component={Paper}
@@ -310,62 +399,5 @@ MainPage.defaultProps = {
   },
 };
 
-// 434
 export default MainPage;
-
-// {/* <div className={classes.sectionMobile}>
-// <List className={classes.root}>
-//   {countriesList &&
-//     countriesList.map((country) => (
-//       <ListItem
-//         key={country.name}
-//         className={classes.listItem}
-//         onClick={() => handleSelectCountry(country.name)}
-//       >
-//         <ListItemAvatar className={classes.avatarContainer}>
-//           <Avatar className={classes.avatar} src={country.flag} />
-//         </ListItemAvatar>
-
-//         <ListItemText
-//           primary={
-//             <Typography variant="button">{country.name}</Typography>
-//           }
-//           secondary={
-//             <>
-//               <Typography variant="subtitle2" component="span">
-//                 {country.capital}
-//               </Typography>
-//               <br />
-//               <Typography variant="caption" component="span">
-//                 Language(s):&nbsp;
-//                 {country.languages.map((lang, index) => {
-//                   let l = lang.iso639_2.toUpperCase();
-//                   if (index !== country.languages.length - 1) {
-//                     l += '/ ';
-//                   }
-//                   return l;
-//                 })}
-//               </Typography>
-//               <span className={classes.footer}>
-//                 <Typography
-//                   variant="caption"
-//                   align="justify"
-//                   component="span"
-//                 >
-//                   Area: {country.area?.toLocaleString()} km<sup>2</sup>
-//                 </Typography>
-//                 <Typography
-//                   variant="caption"
-//                   align="right"
-//                   component="span"
-//                 >
-//                   Population: {country.population?.toLocaleString()}
-//                 </Typography>
-//               </span>
-//             </>
-//           }
-//         />
-//       </ListItem>
-//     ))}
-// </List>
-// </div> */}
+// 434

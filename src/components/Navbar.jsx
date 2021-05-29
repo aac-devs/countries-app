@@ -1,26 +1,27 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
+// import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
-import SearchIcon from '@material-ui/icons/Search';
+// import SearchIcon from '@material-ui/icons/Search';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import HomeIcon from '@material-ui/icons/Home';
 import PublicIcon from '@material-ui/icons/Public';
-import InfoIcon from '@material-ui/icons/Info';
+// import InfoIcon from '@material-ui/icons/Info';
 import { Link } from 'react-router-dom';
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
   bar: {
-    backgroundColor: '#004d40',
+    backgroundColor: '#1a237e',
     top: 0,
   },
   menuButton: {
@@ -33,43 +34,43 @@ const useStyles = makeStyles((theme) => ({
       display: 'block',
     },
   },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
+  // search: {
+  //   position: 'relative',
+  //   borderRadius: theme.shape.borderRadius,
+  //   backgroundColor: fade(theme.palette.common.white, 0.15),
+  //   '&:hover': {
+  //     backgroundColor: fade(theme.palette.common.white, 0.25),
+  //   },
+  //   marginRight: theme.spacing(2),
+  //   marginLeft: 0,
+  //   width: '100%',
+  //   [theme.breakpoints.up('sm')]: {
+  //     marginLeft: theme.spacing(3),
+  //     width: 'auto',
+  //   },
+  // },
+  // searchIcon: {
+  //   padding: theme.spacing(0, 2),
+  //   height: '100%',
+  //   position: 'absolute',
+  //   pointerEvents: 'none',
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // inputRoot: {
+  //   color: 'inherit',
+  // },
+  // inputInput: {
+  //   padding: theme.spacing(1, 1, 1, 0),
+  //   // vertical padding + font size from searchIcon
+  //   paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+  //   transition: theme.transitions.create('width'),
+  //   width: '100%',
+  //   [theme.breakpoints.up('md')]: {
+  //     width: '20ch',
+  //   },
+  // },
   titleDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
@@ -104,9 +105,9 @@ const Navbar = () => {
     console.log('handleMobileMenuOpen');
   };
 
-  const handleChangeSearch = () => {
-    console.log('handleChangeSearch');
-  };
+  // const handleChangeSearch = () => {
+  //   console.log('handleChangeSearch');
+  // };
 
   // const submitSearch = () => {
   //   console.log('submitSearch');
@@ -146,9 +147,9 @@ const Navbar = () => {
       </MenuItem>
 
       <MenuItem onClick={() => handleMobileMenuClose('about')}>
-        <Link to="/about" className={classes.link}>
+        <Link to="/stats" className={classes.link}>
           <IconButton color="inherit">
-            <InfoIcon />
+            <BarChartIcon />
           </IconButton>
         </Link>
         {/* <Typography variant="h6" className={classes.title}>
@@ -159,13 +160,13 @@ const Navbar = () => {
   );
 
   return (
-    <div className={classes.grow}>
+    <div>
       <AppBar position="fixed" className={classes.bar}>
         <Toolbar>
           <Typography className={classes.title} variant="h5" noWrap>
             aac-devs
           </Typography>
-          <div className={classes.search}>
+          {/* <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -179,7 +180,7 @@ const Navbar = () => {
               onChange={handleChangeSearch}
               // onSubmit={submitSearch}
             />
-          </div>
+          </div> */}
           <div className={classes.grow} />
 
           <IconButton color="inherit" className={classes.titleDesktop}>
@@ -195,8 +196,8 @@ const Navbar = () => {
           </IconButton>
 
           <IconButton color="inherit" className={classes.titleDesktop}>
-            <Link to="/about" className={classes.link}>
-              <InfoIcon />
+            <Link to="/stats" className={classes.link}>
+              <BarChartIcon />
             </Link>
           </IconButton>
 

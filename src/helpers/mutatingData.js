@@ -46,35 +46,39 @@ const languages = [
   { name: 'Swedish (SWE)', code: 'sv' },
 ];
 
-const mutatingCountryList = (
-  original,
-  region,
-  subregion,
-  language,
-  order,
-  sense,
-) => {
+const searchCountryCapital = (c, word) => {
+  const array = c.filter(
+    (item) =>
+      item.name.toLowerCase().startsWith(word) ||
+      item.capital.toLowerCase().startsWith(word) ||
+      item.name.toLowerCase().includes(` ${word}`) ||
+      item.capital.toLowerCase().includes(` ${word}`),
+  );
+  return array;
+};
+
+const mutatingCountryList = (original, m) => {
   let regionList = [];
   let languageList = [];
   let orderList = [];
   let senseList = [];
 
   // Filtrar por region - subregion
-  if (region === 'World') {
+  if (m.region === 'World') {
     regionList = [...original];
-  } else if (subregion !== 'All') {
-    regionList = original.filter((item) => item.subregion === subregion);
+  } else if (m.subregion !== 'All') {
+    regionList = original.filter((item) => item.subregion === m.subregion);
   } else {
-    regionList = original.filter((item) => item.region === region);
+    regionList = original.filter((item) => item.region === m.region);
   }
 
   // Filtrar por idioma
-  if (language === 'None') {
+  if (m.language === 'None') {
     languageList = [...regionList];
   } else {
     languageList = regionList.filter((item) => {
       const langs = item.languages.map((i) => i.iso639_1);
-      if (langs.includes(language)) {
+      if (langs.includes(m.language)) {
         return item;
       }
       return null;
@@ -82,14 +86,14 @@ const mutatingCountryList = (
   }
 
   // Ordenar
-  if (order === 'None') {
+  if (m.orderBy === 'None') {
     orderList = [...languageList];
   } else {
-    orderList = orderArray(order, languageList);
+    orderList = orderArray(m.orderBy, languageList);
   }
 
   // Cambiar Sentido
-  if (sense === 'up-to-down') {
+  if (m.orderSense === 'up-to-down') {
     senseList = [...orderList];
   } else {
     senseList = [...orderList.reverse()];
@@ -98,5 +102,5 @@ const mutatingCountryList = (
   return senseList;
 };
 
-export { languages };
+export { languages, searchCountryCapital };
 export default mutatingCountryList;

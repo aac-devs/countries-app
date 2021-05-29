@@ -5,9 +5,9 @@ import theme from './themeConfig';
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <CountriesProvider>
-        <Router />
+    <ThemeProvider theme={theme} className="theme-provider">
+      <CountriesProvider className="countries-provider">
+        <Router className="router" />
       </CountriesProvider>
     </ThemeProvider>
   );
