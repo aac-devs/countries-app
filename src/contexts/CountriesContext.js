@@ -1,5 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+// import generateStats from '../helpers/statsData';
+import generateStatistics from '../helpers/generate-stats';
 
 const CountriesContext = createContext();
 
@@ -17,7 +19,7 @@ const getRegions = (list) => {
   return regions;
 };
 
-const initialState = {
+const initialMutations = {
   region: 'World',
   subregion: 'All',
   language: 'None',
@@ -28,7 +30,8 @@ const initialState = {
 const CountriesProvider = ({ children }) => {
   const [countries, setCountries] = useState([]);
   const [regions, setRegions] = useState({});
-  const [mutations, setMutations] = useState(initialState);
+  const [mutations, setMutations] = useState(initialMutations);
+  const [stats, setStats] = useState({});
   const [search, setSearch] = useState('');
 
   const fetchData = async () => {
@@ -48,8 +51,16 @@ const CountriesProvider = ({ children }) => {
     }
   }, [countries]);
 
+  useEffect(() => {
+    if (JSON.stringify(regions) !== '{}') {
+      const surface = generateStatistics(countries, regions, 'area');
+      const population = generateStatistics(countries, regions, 'population');
+      setStats({ surface, population });
+    }
+  }, [regions]);
+
   const resetMutations = () => {
-    setMutations(initialState);
+    setMutations(initialMutations);
   };
 
   return (
@@ -63,6 +74,7 @@ const CountriesProvider = ({ children }) => {
           resetMutations,
           search,
           setSearch,
+          stats,
         }}
       >
         {children}
