@@ -1,12 +1,11 @@
+import PropTypes from 'prop-types';
 import { useEffect, useContext, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Avatar,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  // Button,
   Table,
   TableBody,
   TableCell,
@@ -16,110 +15,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import useStyles, { mainRegions } from './statsStyles';
 import CountriesContext from '../contexts/CountriesContext';
-// import { generateStats } from '../helpers/statsData';
 
-const useStyles = makeStyles(() => ({
-  link: {
-    textDecoration: 'none',
-    color: 'inherit',
-  },
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: '16px',
-    opacity: '0.7',
-  },
-  paper: {
-    height: 'calc(100vh - 128px)',
-    maxWidth: '1024px',
-    minWidth: '1024px',
-    padding: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  head: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-  },
-  body: {
-    marginTop: '16px',
-    flexGrow: 1,
-    overflowY: 'scroll',
-    border: '1px solid #eee',
-    borderRadius: '5px',
-  },
-  cellSize: {
-    minWidth: '175px',
-    width: '175px',
-    // padding: '8px 16px',
-    padding: '16px',
-    fontSize: '18px',
-  },
-  cellPadding: {
-    padding: '16px',
-  },
-  card: {
-    heigh: '400px',
-    maxHeight: '400px',
-    width: '400px',
-    maxWidth: '400px',
-    marginRight: '16px',
-    border: '1px solid #eee',
-  },
-  headBody: {
-    flexGrow: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
-  name: {},
-  button: {
-    alignSelf: 'flex-end',
-  },
-  formControl: {
-    minWidth: '350px',
-    maxWidth: '350px',
-    width: '350px',
-    alignSelf: 'flex-end',
-  },
-  title: {
-    margin: '0 auto',
-    marginBottom: '8px',
-  },
-  cellInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    // justifyContent: 'flex-start',
-    alignItems: 'center',
-    // minWidth: '300px',
-    // maxWidth: '300px',
-    // width: '300px',
-  },
-  // row: {
-  //   display: 'flex',
-  //   justifyContent: 'flex-start',
-  //   flexWrap: 'no-wrap',
-  // },
-}));
-
-// eslint-disable-next-line no-unused-vars
-const mainRegions = [
-  'World',
-  'Africa',
-  'Americas',
-  'Asia',
-  'Europe',
-  'Oceania',
-  'Polar',
-];
-
-const StatsPage = () => {
+const StatsPage = ({ history }) => {
   const classes = useStyles();
   const { stats } = useContext(CountriesContext);
   const [statOption, setStatOption] = useState('surface');
@@ -135,17 +34,18 @@ const StatsPage = () => {
     }
   }, [stats, statOption]);
 
-  console.clear();
-  console.log({ statList });
+  const handleSelectCountry = (option) => {
+    history.push(`/countries/details/:${option}`);
+  };
 
-  // TODO: fijar el header de la tabla. poner los enlaces de cada país para que abra en detalles. Acomodar el nombre del país para que quede junto a la bandera y el valor a la derecha de la celda
+  const handleKeyPress = () => {};
 
   return (
     <>
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <Typography variant="h4" className={classes.title}>
-            Statistics
+            Statistics with Countries
           </Typography>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">
@@ -164,17 +64,20 @@ const StatsPage = () => {
           </FormControl>
 
           <div className={classes.body}>
-            <TableContainer component={Paper}>
+            <TableContainer
+              component={Paper}
+              className={classes.tableContainer}
+            >
               <Table aria-label="simple table" stickyHeader>
                 <TableHead>
                   <TableRow>
                     <TableCell align="left">Region - Subregion</TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" className={classes.row}>
                       {statOption === 'surface'
                         ? 'Largest country (km\u00B2)'
                         : 'Most populated country'}
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" className={classes.row}>
                       {statOption === 'surface'
                         ? 'Less extensive country (km\u00B2)'
                         : 'Less populated country'}
@@ -184,7 +87,7 @@ const StatsPage = () => {
                 <TableBody>
                   {statList &&
                     Object.entries(statList).map((st) => (
-                      <TableRow key={st[0]} className={classes.row}>
+                      <TableRow key={st[0]}>
                         {mainRegions.includes(st[0]) ? (
                           <TableCell
                             align="left"
@@ -203,10 +106,24 @@ const StatsPage = () => {
                         )}
                         <TableCell className={classes.cellPadding}>
                           <div className={classes.cellInfo}>
-                            <Avatar src={st[1].more.flag} />
-                            <Typography variant="body2">
-                              {st[1].more.name}
-                            </Typography>
+                            <div
+                              tabIndex={0}
+                              onKeyPress={handleKeyPress}
+                              role="button"
+                              className={classes.cellRight}
+                              onClick={() =>
+                                handleSelectCountry(
+                                  st[1].more.alpha2Code?.toLowerCase(),
+                                )
+                              }
+                            >
+                              <div className={classes.cellAvatar}>
+                                <Avatar src={st[1].more.flag} />
+                              </div>
+                              <Typography variant="body2">
+                                {st[1].more.name}
+                              </Typography>
+                            </div>
                             <Typography variant="body2">
                               {statOption === 'surface'
                                 ? st[1].more.area?.toLocaleString()
@@ -216,10 +133,24 @@ const StatsPage = () => {
                         </TableCell>
                         <TableCell className={classes.cellPadding}>
                           <div className={classes.cellInfo}>
-                            <Avatar src={st[1].less.flag} />
-                            <Typography variant="body2">
-                              {st[1].less.name}
-                            </Typography>
+                            <div
+                              tabIndex={0}
+                              onKeyPress={handleKeyPress}
+                              role="button"
+                              className={classes.cellRight}
+                              onClick={() =>
+                                handleSelectCountry(
+                                  st[1].less.alpha2Code?.toLowerCase(),
+                                )
+                              }
+                            >
+                              <div className={classes.cellAvatar}>
+                                <Avatar src={st[1].less.flag} />
+                              </div>
+                              <Typography variant="body2">
+                                {st[1].less.name}
+                              </Typography>
+                            </div>
                             <Typography variant="body2">
                               {statOption === 'surface'
                                 ? st[1].less.area?.toLocaleString()
@@ -237,6 +168,40 @@ const StatsPage = () => {
       </div>
     </>
   );
+};
+
+StatsPage.propTypes = {
+  history: PropTypes.objectOf(
+    PropTypes.shape({
+      action: PropTypes.string,
+      block: PropTypes.func,
+      createHref: PropTypes.func,
+      go: PropTypes.func,
+      goBack: PropTypes.func,
+      goForward: PropTypes.func,
+      length: PropTypes.number,
+      listen: PropTypes.func,
+      location: PropTypes.objectOf(PropTypes.string),
+      push: PropTypes.func,
+      replace: PropTypes.func,
+    }),
+  ),
+};
+
+StatsPage.defaultProps = {
+  history: {
+    action: '',
+    block: () => {},
+    createHref: () => {},
+    go: () => {},
+    goBack: () => {},
+    goForward: () => {},
+    length: 0,
+    listen: () => {},
+    location: {},
+    push: () => {},
+    replace: () => {},
+  },
 };
 
 export default StatsPage;

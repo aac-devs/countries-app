@@ -15,9 +15,6 @@ import background from './assets/wallpaper.jpg';
 const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
   wallpaper: {
-    // backgroundColor: 'wheat',
-    // height: '100%',
-    // minHeight: '100%',
     flexGrow: 1,
     backgroundImage: `linear-gradient(rgba(5, 5, 5, 0), rgb(0, 0, 0)), linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url(${background})`,
     backgroundSize: 'cover',
@@ -48,14 +45,3 @@ const AppRouter = () => {
 };
 
 export default AppRouter;
-
-/*
-
- width: 100%;
-  background-image: linear-gradient(rgba(5, 5, 5, 0), rgb(0, 0, 0)),
-    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
-    url('./assets/wallpaper.jpg');
-  background-size: cover;
-  background-position: top;
-  background-repeat: no-repeat;
-*/
