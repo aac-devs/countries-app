@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useEffect, useContext, useState } from 'react';
+import { useHistory } from 'react-router';
 import {
   Avatar,
   FormControl,
@@ -18,8 +19,11 @@ import {
 import useStyles, { mainRegions } from './statsStyles';
 import CountriesContext from '../contexts/CountriesContext';
 
-const StatsPage = ({ history }) => {
+// const StatsPage = ({ history }) => {
+const StatsPage = () => {
   const classes = useStyles();
+  const history = useHistory();
+
   const { stats } = useContext(CountriesContext);
   const [statOption, setStatOption] = useState('surface');
   const [statList, setStatList] = useState({});
@@ -45,7 +49,7 @@ const StatsPage = ({ history }) => {
       <div className={classes.root}>
         <Paper className={classes.paper}>
           <Typography variant="h4" className={classes.title}>
-            Statistics with Countries
+            Statistics
           </Typography>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">
@@ -170,38 +174,38 @@ const StatsPage = ({ history }) => {
   );
 };
 
-StatsPage.propTypes = {
-  history: PropTypes.objectOf(
-    PropTypes.shape({
-      action: PropTypes.string,
-      block: PropTypes.func,
-      createHref: PropTypes.func,
-      go: PropTypes.func,
-      goBack: PropTypes.func,
-      goForward: PropTypes.func,
-      length: PropTypes.number,
-      listen: PropTypes.func,
-      location: PropTypes.objectOf(PropTypes.string),
-      push: PropTypes.func,
-      replace: PropTypes.func,
-    }),
-  ),
-};
+// StatsPage.propTypes = {
+//   history: PropTypes.objectOf(
+//     PropTypes.shape({
+//       action: PropTypes.string,
+//       block: PropTypes.func,
+//       createHref: PropTypes.func,
+//       go: PropTypes.func,
+//       goBack: PropTypes.func,
+//       goForward: PropTypes.func,
+//       length: PropTypes.number,
+//       listen: PropTypes.func,
+//       location: PropTypes.objectOf(PropTypes.string),
+//       push: PropTypes.func,
+//       replace: PropTypes.func,
+//     }),
+//   ),
+// };
 
-StatsPage.defaultProps = {
-  history: {
-    action: '',
-    block: () => {},
-    createHref: () => {},
-    go: () => {},
-    goBack: () => {},
-    goForward: () => {},
-    length: 0,
-    listen: () => {},
-    location: {},
-    push: () => {},
-    replace: () => {},
-  },
-};
+// StatsPage.defaultProps = {
+//   history: {
+//     action: '',
+//     block: () => {},
+//     createHref: () => {},
+//     go: () => {},
+//     goBack: () => {},
+//     goForward: () => {},
+//     length: 0,
+//     listen: () => {},
+//     location: {},
+//     push: () => {},
+//     replace: () => {},
+//   },
+// };
 
 export default StatsPage;

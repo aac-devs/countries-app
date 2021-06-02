@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import {
   CardActions,
   CardMedia,
@@ -16,10 +16,11 @@ import {
 import useStyles from './detailStyles';
 import formatDetailData from '../helpers/formatDetailData';
 
-const DetailPage = ({ history = {} }) => {
+const DetailPage = () => {
   const [country, setCountry] = useState({});
   const [data, setData] = useState([]);
   const classes = useStyles();
+  const history = useHistory();
 
   useEffect(() => {
     (async () => {
@@ -51,8 +52,13 @@ const DetailPage = ({ history = {} }) => {
               </Typography>
               <CardActions className={classes.button}>
                 <Link to="/countries" className={classes.link}>
-                  <Button size="small" color="primary">
+                  <Button size="small" color="primary" variant="outlined">
                     back to countries list
+                  </Button>
+                </Link>
+                <Link to="/stats" className={classes.link}>
+                  <Button size="small" color="secondary" variant="outlined">
+                    back to statistics page
                   </Button>
                 </Link>
               </CardActions>
@@ -88,49 +94,49 @@ const DetailPage = ({ history = {} }) => {
   );
 };
 
-DetailPage.propTypes = {
-  history: PropTypes.objectOf(
-    PropTypes.shape({
-      action: PropTypes.string,
-      block: PropTypes.func,
-      createHref: PropTypes.func,
-      go: PropTypes.func,
-      goBack: PropTypes.func,
-      goForward: PropTypes.func,
-      length: PropTypes.number,
-      listen: PropTypes.func,
-      location: PropTypes.objectOf({
-        hash: PropTypes.string,
-        pathname: PropTypes.string,
-        search: PropTypes.string,
-        state: PropTypes.string,
-      }),
+// DetailPage.propTypes = {
+//   history: PropTypes.objectOf(
+//     PropTypes.shape({
+//       action: PropTypes.string,
+//       block: PropTypes.func,
+//       createHref: PropTypes.func,
+//       go: PropTypes.func,
+//       goBack: PropTypes.func,
+//       goForward: PropTypes.func,
+//       length: PropTypes.number,
+//       listen: PropTypes.func,
+//       location: PropTypes.objectOf({
+//         hash: PropTypes.string,
+//         pathname: PropTypes.string,
+//         search: PropTypes.string,
+//         state: PropTypes.string,
+//       }),
 
-      push: PropTypes.func,
-      replace: PropTypes.func,
-    }),
-  ),
-};
+//       push: PropTypes.func,
+//       replace: PropTypes.func,
+//     }),
+//   ),
+// };
 
-DetailPage.defaultProps = {
-  history: {
-    action: '',
-    block: () => {},
-    createHref: () => {},
-    go: () => {},
-    goBack: () => {},
-    goForward: () => {},
-    length: 0,
-    listen: () => {},
-    location: {
-      hash: '',
-      pathname: '',
-      search: '',
-      state: '',
-    },
-    push: () => {},
-    replace: () => {},
-  },
-};
+// DetailPage.defaultProps = {
+//   history: {
+//     action: '',
+//     block: () => {},
+//     createHref: () => {},
+//     go: () => {},
+//     goBack: () => {},
+//     goForward: () => {},
+//     length: 0,
+//     listen: () => {},
+//     location: {
+//       hash: '',
+//       pathname: '',
+//       search: '',
+//       state: '',
+//     },
+//     push: () => {},
+//     replace: () => {},
+//   },
+// };
 
 export default DetailPage;
