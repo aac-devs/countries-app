@@ -1,5 +1,3 @@
-// import React from 'react';
-// import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { Button, Typography } from '@material-ui/core';
 import useStyles from './homeStyles';
@@ -37,37 +35,4 @@ const HomePage = () => {
   );
 };
 
-// HomePage.propTypes = {
-//   history: PropTypes.objectOf(
-//     PropTypes.shape({
-//       action: PropTypes.string,
-//       block: PropTypes.func,
-//       createHref: PropTypes.func,
-//       go: PropTypes.func,
-//       goBack: PropTypes.func,
-//       goForward: PropTypes.func,
-//       length: PropTypes.number,
-//       listen: PropTypes.func,
-//       location: PropTypes.objectOf(PropTypes.string),
-//       push: PropTypes.func,
-//       replace: PropTypes.func,
-//     }),
-//   ),
-// };
-
-// HomePage.defaultProps = {
-//   history: {
-//     action: '',
-//     block: () => {},
-//     createHref: () => {},
-//     go: () => {},
-//     goBack: () => {},
-//     goForward: () => {},
-//     length: 0,
-//     listen: () => {},
-//     location: {},
-//     push: () => {},
-//     replace: () => {},
-//   },
-// };
 export default HomePage;

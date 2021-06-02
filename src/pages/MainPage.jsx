@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useHistory } from 'react-router';
-// import PropTypes from 'prop-types';
 import {
   Avatar,
   Divider,
@@ -30,7 +29,6 @@ import mutatingCountryList, {
   languages,
   searchCountryCapital,
 } from '../helpers/mutatingData';
-// import Loading from '../components/Loading';
 
 const MainPage = () => {
   const classes = useStyles();
@@ -286,39 +284,4 @@ const MainPage = () => {
   );
 };
 
-// MainPage.propTypes = {
-//   history: PropTypes.objectOf(
-//     PropTypes.shape({
-//       action: PropTypes.string,
-//       block: PropTypes.func,
-//       createHref: PropTypes.func,
-//       go: PropTypes.func,
-//       goBack: PropTypes.func,
-//       goForward: PropTypes.func,
-//       length: PropTypes.number,
-//       listen: PropTypes.func,
-//       location: PropTypes.objectOf(PropTypes.string),
-//       push: PropTypes.func,
-//       replace: PropTypes.func,
-//     }),
-//   ),
-// };
-
-// MainPage.defaultProps = {
-//   history: {
-//     action: '',
-//     block: () => {},
-//     createHref: () => {},
-//     go: () => {},
-//     goBack: () => {},
-//     goForward: () => {},
-//     length: 0,
-//     listen: () => {},
-//     location: {},
-//     push: () => {},
-//     replace: () => {},
-//   },
-// };
-
 export default MainPage;
-// 434

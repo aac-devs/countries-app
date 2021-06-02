@@ -1,4 +1,3 @@
-// import PropTypes from 'prop-types';
 import { useEffect, useContext, useState } from 'react';
 import { useHistory } from 'react-router';
 import {
@@ -19,7 +18,6 @@ import {
 import useStyles, { mainRegions } from './statsStyles';
 import CountriesContext from '../contexts/CountriesContext';
 
-// const StatsPage = ({ history }) => {
 const StatsPage = () => {
   const classes = useStyles();
   const history = useHistory();
@@ -173,39 +171,5 @@ const StatsPage = () => {
     </>
   );
 };
-
-// StatsPage.propTypes = {
-//   history: PropTypes.objectOf(
-//     PropTypes.shape({
-//       action: PropTypes.string,
-//       block: PropTypes.func,
-//       createHref: PropTypes.func,
-//       go: PropTypes.func,
-//       goBack: PropTypes.func,
-//       goForward: PropTypes.func,
-//       length: PropTypes.number,
-//       listen: PropTypes.func,
-//       location: PropTypes.objectOf(PropTypes.string),
-//       push: PropTypes.func,
-//       replace: PropTypes.func,
-//     }),
-//   ),
-// };
-
-// StatsPage.defaultProps = {
-//   history: {
-//     action: '',
-//     block: () => {},
-//     createHref: () => {},
-//     go: () => {},
-//     goBack: () => {},
-//     goForward: () => {},
-//     length: 0,
-//     listen: () => {},
-//     location: {},
-//     push: () => {},
-//     replace: () => {},
-//   },
-// };
 
 export default StatsPage;
