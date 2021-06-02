@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   offset: theme.mixins.toolbar,
   wallpaper: {
     flexGrow: 1,
-    backgroundImage: `linear-gradient(rgba(5, 5, 5, 0), rgb(0, 0, 0)), linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url(wallpaper.jpg)`,
+    backgroundImage: `linear-gradient(rgba(5, 5, 5, 0), rgb(0, 0, 0)), linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)), url("wallpaper.jpg")`,
     backgroundSize: 'cover',
     backgroundPosition: 'top',
     backgroundRepeat: 'no-repeat',
