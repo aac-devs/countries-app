@@ -242,20 +242,20 @@ const MainPage = () => {
                 <TableBody>
                   {countriesList.map((country, i) => (
                     <TableRow
-                      key={country.name}
+                      key={country.name.common}
                       className={classes.tableRow}
                       onClick={() =>
-                        handleSelectCountry(country.alpha2Code.toLowerCase())
+                        handleSelectCountry(country.cca2.toLowerCase())
                       }
                     >
                       <TableCell align="center">{i + 1}</TableCell>
                       <TableCell align="center">
                         <Avatar
-                          src={country.flag}
+                          src={country.flags.svg}
                           className={classes.tableAvatar}
                         />
                       </TableCell>
-                      <TableCell align="left">{country.name}</TableCell>
+                      <TableCell align="left">{country.name.common}</TableCell>
                       <TableCell align="left">{country.capital}</TableCell>
                       <TableCell align="right">
                         {country.area?.toLocaleString()}
@@ -264,13 +264,11 @@ const MainPage = () => {
                         {country.population?.toLocaleString()}
                       </TableCell>
                       <TableCell align="right">
-                        {country.languages.map((lang, index) => {
-                          let l = lang.iso639_2.toUpperCase();
-                          if (index !== country.languages.length - 1) {
-                            l += '/ ';
-                          }
-                          return l;
-                        })}
+                        {country.languages
+                          ? Object.keys(country.languages).map((lang) => {
+                              return `${lang.toUpperCase()} `;
+                            })
+                          : ''}
                       </TableCell>
                     </TableRow>
                   ))}

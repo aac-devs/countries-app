@@ -5,7 +5,9 @@ const generateStatistics = (c, r, option) => {
   Object.keys(r).forEach((reg) => {
     keys.push(reg);
     r[reg].forEach((i) => {
-      keys.push(i);
+      if (i) {
+        keys.push(i);
+      }
     });
   });
 

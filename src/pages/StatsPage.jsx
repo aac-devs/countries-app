@@ -115,15 +115,15 @@ const StatsPage = () => {
                               className={classes.cellRight}
                               onClick={() =>
                                 handleSelectCountry(
-                                  st[1].more.alpha2Code?.toLowerCase(),
+                                  st[1].more.cca2?.toLowerCase(),
                                 )
                               }
                             >
                               <div className={classes.cellAvatar}>
-                                <Avatar src={st[1].more.flag} />
+                                <Avatar src={st[1].more.flags.svg} />
                               </div>
                               <Typography variant="body2">
-                                {st[1].more.name}
+                                {st[1].more.name.common}
                               </Typography>
                             </div>
                             <Typography variant="body2">
@@ -142,15 +142,15 @@ const StatsPage = () => {
                               className={classes.cellRight}
                               onClick={() =>
                                 handleSelectCountry(
-                                  st[1].less.alpha2Code?.toLowerCase(),
+                                  st[1].less.cca2?.toLowerCase(),
                                 )
                               }
                             >
                               <div className={classes.cellAvatar}>
-                                <Avatar src={st[1].less.flag} />
+                                <Avatar src={st[1].less.flags.svg} />
                               </div>
                               <Typography variant="body2">
-                                {st[1].less.name}
+                                {st[1].less.name.common}
                               </Typography>
                             </div>
                             <Typography variant="body2">

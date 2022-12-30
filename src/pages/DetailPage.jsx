@@ -24,14 +24,19 @@ const DetailPage = () => {
   useEffect(() => {
     (async () => {
       const name = history.location.pathname.split('/')[3].replace(':', '');
-      const resp = await fetch(
-        `https://restcountries.eu/rest/v2/alpha/${name}`,
-      );
-      const detailData = await resp.json();
+
+      const resp = await fetch(`https://restcountries.com/v3.1//alpha/${name}`);
+      const json = await resp.json();
+      const detailData = json[0];
+
       setCountry(detailData);
       setData(formatDetailData(detailData));
     })();
   }, []);
+
+  if (JSON.stringify(country) === '{}') {
+    return <></>;
+  }
 
   return (
     <>
@@ -40,14 +45,14 @@ const DetailPage = () => {
           <div className={classes.head}>
             <CardMedia
               component="img"
-              alt={country.name}
-              image={country.flag}
-              title={country.name}
+              alt={country.name.common}
+              image={country.flags.svg}
+              title={country.name.common}
               className={classes.card}
             />
             <div className={classes.headBody}>
               <Typography gutterBottom variant="h3" align="center">
-                {country.name}
+                {country.name.common}
               </Typography>
               <CardActions className={classes.button}>
                 <Link to="/countries" className={classes.link}>
